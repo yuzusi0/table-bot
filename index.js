@@ -61,7 +61,7 @@ discordClient.once('ready', () => {
 });
 
 // WebSocketサーバーの作成
-const wss = new WebSocket.Server({ port: 3000 });
+const wss = new WebSocket.Server({ port: process.env.PORT || 3000, host: '0.0.0.0' });
 console.log('WebSocketサーバーがポート3000で起動しました。');
 
 // ターミナル入力を受け取る準備
