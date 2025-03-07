@@ -7,7 +7,8 @@ const discordClient = new Client({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 
-const PORT = 8080; // WebSocketサーバーのポート番号
+const PORT = process.env.PORT || 8080; // Railwayのポートを使用
+
 
 // WebSocketサーバーの作成
 const wss = new WebSocket.Server({ port: PORT }, () => {
