@@ -4,47 +4,42 @@
   <meta charset="utf-8">
   <title>画像表示</title>
   <style>
-    /* ページ全体のスタイル */
     body {
       margin: 0;
       padding: 0;
       display: flex;
-      justify-content: center; /* 水平方向中央揃え */
-      align-items: center; /* 垂直方向中央揃え */
-      height: 100vh; /* ビューポート全体の高さ */
-      background-color: #f0f0f0; /* 背景色（必要に応じて変更） */
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
     }
-
-    /* 画像のスタイル */
     img {
-      max-width: 90%; /* 画像がウィンドウを超えないよう調整 */
-      max-height: 90%; /* 画像がウィンドウを超えないよう調整 */
+      max-width: 90%;
+      max-height: 90%;
     }
   </style>
 </head>
 <body>
-  <img id="image_place" src="image1.png" alt="表示する画像">
+  <img id="image_place" src="/images/default.png" alt="表示する画像">
 
   <script type="text/javascript">
-    // WebSocketクライアントの作成
-    const socket = new WebSocket('ws://localhost:3000');
+    const railwayDomain = window.location.hostname;
+    const socketUrl = `wss://${railwayDomain}`;
+    const socket = new WebSocket(socketUrl);
     const img = document.getElementById('image_place');
 
-    // WebSocket接続が開いたとき
     socket.onopen = () => {
       console.log('WebSocket接続が確立されました。');
     };
 
-    // サーバーからデータを受信したとき
     socket.onmessage = (event) => {
-      let imageName = event.data.trim(); // サーバーからのデータ
+      let imageName = event.data.trim();
       if (!imageName.endsWith(".png")) {
-        imageName += ".png"; // 拡張子を自動追加
+        imageName += ".png";
       }
-      img.src = imageName; // 画像を切り替え
+      img.src = `/images/${imageName}`;
     };
 
-    // WebSocket接続が閉じたとき
     socket.onclose = () => {
       console.log('WebSocket接続が切断されました。');
     };
