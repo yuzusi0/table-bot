@@ -1,20 +1,13 @@
+const { Client, Events, GatewayIntentBits } = require('discord.js');
 const WebSocket = require('ws');
 const readline = require('readline');
-const { Client, GatewayIntentBits } = require('discord.js');
-require('dotenv').config();
 
-// 環境変数の取得
-const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
-const PORT = process.env.PORT || 3000;
-
-// Discordクライアントの作成
+// Discordボットの設定
 const discordClient = new Client({
-  intents: [GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.Guilds]
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]
 });
 
-discordClient.once('ready', () => {
-  console.log(`Discordボットが起動しました。ログイン中: ${discordClient.user.tag}`);
-});
+const PORT = 8080; // WebSocketサーバーのポート番号
 
 // WebSocketサーバーの作成
 const wss = new WebSocket.Server({ port: PORT }, () => {
@@ -64,7 +57,7 @@ wss.on('connection', (ws) => {
 // Discordボットのメッセージ処理
 let activeChannelId = null;
 
-discordClient.on('messageCreate', (message) => {
+discordClient.on(Events.MessageCreate, (message) => {
   if (message.author.bot) return;
 
   const content = message.content.trim();
@@ -93,8 +86,9 @@ discordClient.on('messageCreate', (message) => {
   }
 });
 
-// Discordボットのログイン
-discordClient.login(DISCORD_TOKEN);
+// 環境変数からトークンを読み込み、ログイン
+discordClient.login(process.env.TOKEN);
+
 
 
 
