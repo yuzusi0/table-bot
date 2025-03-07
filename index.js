@@ -8,10 +8,13 @@ const discordClient = new Client({
 });
 
 const PORT = process.env.PORT || 8080; // Railwayのポートを使用
+const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";
+
+
 
 
 // WebSocketサーバーの作成
-const wss = new WebSocket.Server({ port: PORT }, () => {
+const socketUrl = `wss://${DOMAIN}`;
   console.log(`WebSocketサーバーがポート${PORT}で起動しました。`);
 });
 
