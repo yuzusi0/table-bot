@@ -11,16 +11,17 @@ const PORT = process.env.PORT || 8080; // Railwayのポートを使用
 const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";
 
 // WebSocketサーバーの作成
-const socketUrl = `wss://${DOMAIN}`;
-  console.log(`WebSocketサーバーがポート${PORT}で起動しました。`);
+const wss = new WebSocket.Server({ port: PORT });
+console.log(`WebSocketサーバーがポート${PORT}で起動しました。`);
 
 // Discord Bot
-const TARGET_CHANNEL_ID = '1029702781583491102'; // 画像のコマンドを入力するチャンネルID
+const TARGET_CHANNEL_ID = '1256172324525441074'; // 画像のコマンドを入力するチャンネルID
 
 // 画像の別名マッピング
 const imageAliases = {
   "まりかす": "mks.png", "マリカス": "mks.png", "マリオカートスタジアム": "mks.png", "まりおかーとすたじあむ": "mks.png",
 };
+
 // Discordボットでメッセージ受信時の処理
 discordClient.on('messageCreate', (message) => {
   if (message.channel.id === TARGET_CHANNEL_ID && !message.author.bot) {
@@ -48,6 +49,7 @@ discordClient.on('messageCreate', (message) => {
 
 // 環境変数からトークンを読み込み、ログイン
 discordClient.login(process.env.TOKEN);
+
 
 
 
