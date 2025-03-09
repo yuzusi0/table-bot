@@ -10,78 +10,35 @@ const discordClient = new Client({
 const PORT = process.env.PORT || 8080; // Railwayのポートを使用
 const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";
 
-
-
-
 // WebSocketサーバーの作成
 const socketUrl = `wss://${DOMAIN}`;
   console.log(`WebSocketサーバーがポート${PORT}で起動しました。`);
 });
 
+// Discord Bot
+const TARGET_CHANNEL_ID = '1029702781583491102'; // 画像のコマンドを入力するチャンネルID
+
 // 画像の別名マッピング
 const imageAliases = {
-  "まりかす": "mks.png", "マリカス": "mks.png", "マリオカートスタジアム": "mks.png",
-  "すいきゃに": "scc.png", "スイキャニ": "scc.png",
-  "いせき": "tr.png", "どっすんいせき": "tr.png", "遺跡": "tr.png",
-  "まりさ": "mc.png", "マリサ": "mc.png",
-  "ねじれ": "tm.png", "ねじれまんしょん": "tm.png",
-  "へいほー": "sh.png", "ヘイホーこうざん": "sh.png",
-  "くうこう": "sa.png", "サンシャイン空港": "sa.png",
-  "どるみ": "ds.png", "ドルミ": "ds.png",
-  "えれど": "ed.png", "エレドリ": "ed.png"
+  "まりかす": "mks.png", "マリカス": "mks.png", "マリオカートスタジアム": "mks.png", "まりおかーとすたじあむ": "mks.png",
 };
+// Discordボットでメッセージ受信時の処理
+discordClient.on('messageCreate', (message) => {
+  if (message.channel.id === TARGET_CHANNEL_ID && !message.author.bot) {
+    const content = message.content.trim();
+    console.log(`Discordでの入力: ${content}`);
 
-// ターミナル入力
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+    // 入力されたコンテンツが別名マッピングにあるか確認
+    let imageName = imageAliases[content] || `${content}.png`;  // マッピングがあればそれを使用、なければ拡張子を付けて使用
 
-// 入力を画像ファイル名に変換する関数
-function getImageFileName(input) {
-  return imageAliases[input] || `${input}.png`;
-}
-
-// WebSocket接続
-wss.on('connection', (ws) => {
-  console.log('クライアントが接続しました。');
-
-  rl.on('line', (line) => {
-    if (line.trim()) {
-      const imageName = getImageFileName(line.trim());
-      ws.send(imageName);
+    // マッピングが見つからない場合も同じ処理
+    if (!imageAliases[content] && !imageName.includes('.png')) {
+      imageName = `${content}.png`; // 拡張子が指定されていない場合、.pngを追加
     }
-  });
 
-  ws.on('close', () => {
-    console.log('クライアントが切断されました。');
-  });
-});
+    console.log(`使用する画像: ${imageName}`);
 
-// Discordボットのメッセージ処理
-let activeChannelId = null;
-
-discordClient.on(Events.MessageCreate, (message) => {
-  if (message.author.bot) return;
-
-  const content = message.content.trim();
-  console.log(`Discord入力: ${content}`);
-
-  if (content === '!start') {
-    activeChannelId = message.channel.id;
-    message.reply("このチャンネルのメッセージを受信します。");
-    return;
-  }
-
-  if (content === '!end') {
-    activeChannelId = null;
-    message.reply("メッセージ受信を終了しました。");
-    return;
-  }
-
-  if (activeChannelId && message.channel.id === activeChannelId) {
-    const imageName = getImageFileName(content);
-
+    // WebSocketクライアント全体に送信
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(imageName);
