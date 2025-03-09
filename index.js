@@ -15,6 +15,9 @@ const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";  // ドメイ�
 const app = express();
 const server = http.createServer(app);
 
+// Expressでpublicフォルダを静的ファイルとして提供
+app.use(express.static('public'));  // ここを追加
+
 // WebSocketサーバーの作成
 const wss = new WebSocket.Server({ server });  // ExpressサーバーとWebSocketを統合
 
