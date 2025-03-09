@@ -23,12 +23,12 @@
   </style>
 </head>
 <body>
-  <img id="image_place" src="image1.png" alt="表示する画像">
+  <img id="image_place" src="images/mks.png" alt="表示する画像">
 
   <script type="text/javascript">
     // WebSocketクライアントの作成
     const DOMAIN = window.location.hostname;
-    const socket = new WebSocket(`wss://${DOMAIN}`);
+    const socket = new WebSocket(`wss://${DOMAIN}:${window.location.port || 8080}`);  // WebSocket接続の修正
     const img = document.getElementById('image_place');
 
     // WebSocket接続が開いたとき
@@ -42,7 +42,7 @@
       if (!imageName.endsWith(".png")) {
         imageName += ".png";
       }
-      img.src = imageName;
+      img.src = `images/${imageName}`;  // 画像パスの修正
     };
 
     // WebSocket接続が閉じたとき
@@ -52,3 +52,4 @@
   </script>
 </body>
 </html>
+
