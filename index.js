@@ -56,8 +56,8 @@ discordClient.on('messageCreate', (message) => {
 // 環境変数からトークンを読み込み、ログイン
 discordClient.login(process.env.TOKEN);
 
-// Expressサーバーで静的ファイルを提供
-app.use(express.static('images'));  // imagesフォルダ内のファイルを静的に提供
+// Expressサーバーで静的ファイルを提供 (絶対パス)
+app.use(express.static(__dirname + '/images'));  // imagesフォルダを静的に提供
 
 // Expressサーバーをポート8080で起動
 server.listen(PORT, () => {
