@@ -9,7 +9,7 @@ const discordClient = new Client({
 });
 
 const PORT = process.env.PORT || 8080; // Railwayのポートを使用
-const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";
+const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";  // ドメイン設定
 
 // Express HTTPサーバーを作成
 const app = express();
@@ -55,6 +55,9 @@ discordClient.on('messageCreate', (message) => {
 
 // 環境変数からトークンを読み込み、ログイン
 discordClient.login(process.env.TOKEN);
+
+// Expressサーバーで静的ファイルを提供
+app.use(express.static('images'));  // imagesフォルダ内のファイルを静的に提供
 
 // Expressサーバーをポート8080で起動
 server.listen(PORT, () => {
