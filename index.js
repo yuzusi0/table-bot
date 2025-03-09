@@ -1,6 +1,7 @@
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const WebSocket = require('ws');
-const readline = require('readline');
+const express = require('express');
+const http = require('http');
 
 // Discordボットの設定
 const discordClient = new Client({
@@ -10,8 +11,13 @@ const discordClient = new Client({
 const PORT = process.env.PORT || 8080; // Railwayのポートを使用
 const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";
 
+// Express HTTPサーバーを作成
+const app = express();
+const server = http.createServer(app);
+
 // WebSocketサーバーの作成
-const wss = new WebSocket.Server({ port: PORT });
+const wss = new WebSocket.Server({ server });  // ExpressサーバーとWebSocketを統合
+
 console.log(`WebSocketサーバーがポート${PORT}で起動しました。`);
 
 // Discord Bot
@@ -49,6 +55,12 @@ discordClient.on('messageCreate', (message) => {
 
 // 環境変数からトークンを読み込み、ログイン
 discordClient.login(process.env.TOKEN);
+
+// Expressサーバーをポート8080で起動
+server.listen(PORT, () => {
+  console.log(`HTTPサーバーがポート${PORT}で起動しました。`);
+});
+
 
 
 
