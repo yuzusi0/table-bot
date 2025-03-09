@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>画像表示</title>
+  <style>
+    /* ページ全体のスタイル */
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f0f0f0;
+    }
+
+    /* 画像のスタイル */
+    img {
+      max-width: 90%;
+      max-height: 90%;
+    }
+  </style>
+</head>
+<body>
+  <img id="image_place" src="image1.png" alt="表示する画像">
+
+  <script type="text/javascript">
+    // WebSocketクライアントの作成
+    const DOMAIN = window.location.hostname;
+    const socket = new WebSocket(`wss://${DOMAIN}`);
+    const img = document.getElementById('image_place');
+
+    // WebSocket接続が開いたとき
+    socket.onopen = () => {
+      console.log('WebSocket接続が確立されました。');
+    };
+
+    // サーバーからデータを受信したとき
+    socket.onmessage = (event) => {
+      let imageName = event.data.trim();
+      if (!imageName.endsWith(".png")) {
+        imageName += ".png";
+      }
+      img.src = imageName;
+    };
+
+    // WebSocket接続が閉じたとき
+    socket.onclose = () => {
+      console.log('WebSocket接続が切断されました。');
+    };
+  </script>
+</body>
+</html>
