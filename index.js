@@ -13,7 +13,6 @@ const DOMAIN = process.env.RAILWAY_PUBLIC_DOMAIN || "localhost";
 // WebSocketサーバーの作成
 const socketUrl = `wss://${DOMAIN}`;
   console.log(`WebSocketサーバーがポート${PORT}で起動しました。`);
-});
 
 // Discord Bot
 const TARGET_CHANNEL_ID = '1029702781583491102'; // 画像のコマンドを入力するチャンネルID
