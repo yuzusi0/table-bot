@@ -36,14 +36,14 @@
       console.log('WebSocket接続が確立されました。');
     };
 
-    // サーバーからデータを受信したとき
-    socket.onmessage = (event) => {
-      let imageName = event.data.trim();
-      if (!imageName.endsWith(".png")) {
-        imageName += ".png";
-      }
-      img.src = `/images/${imageName}`;  // 画像パスの修正
-    };
+socket.onmessage = (event) => {
+  let imageName = event.data.trim();
+  if (!imageName.endsWith(".png")) {
+    imageName += ".png";
+  }
+  img.src = `/images/${imageName}`; // パスを修正
+};
+
 
     // WebSocket接続が閉じたとき
     socket.onclose = () => {
